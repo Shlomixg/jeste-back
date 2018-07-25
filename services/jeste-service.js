@@ -13,7 +13,8 @@ function query(criteria) {
 }
 
 function getById(jesteId) {
-    jesteId = new ObjectId(jesteId)
+    
+    // jesteId = new ObjectId(jesteId)
     return mongoService.connect()
         .then(db => {
             return db.collection(dbCol).findOne({ _id: jesteId })
