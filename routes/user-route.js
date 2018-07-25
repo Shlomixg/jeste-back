@@ -1,5 +1,5 @@
 const userService = require('../services/user-service');
-const USERS_URL = '/users';
+const USERS_URL = '/user';
 
 module.exports = (app) => {
 

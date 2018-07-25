@@ -1,5 +1,5 @@
 const jesteService = require('../services/jeste-service');
-const JESTES_URL = '/jestes';
+const JESTES_URL = '/jeste';
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {

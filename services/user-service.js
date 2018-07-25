@@ -1,6 +1,6 @@
 const mongoService = require('./mongo-service')
 const ObjectId = require('mongodb').ObjectId;
-const dbCollection = 'users';
+const dbCollection = 'user';
 
 // function checkLogin({ nickname }) {
 //     return mongoService.connect()
