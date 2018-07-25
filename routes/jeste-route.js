@@ -4,23 +4,38 @@ const JESTES_URL = '/jeste';
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
         var coordinates
+        var q;
 
-        if(!req.query || !req.query.coords) coordinates = [32.0853, 34.7818]
+        if (!req.query || !req.query.coords) coordinates = [32.0853, 34.7818]
         else coordinates = req.query.coords.split(',').map(coord => +coord)
+        if (!req.query || !req.query.q)  q = ''
+        else q = new RegExp(req.query.q, 'igm')
+        console.log(q);
+        
         const criteria = [
             {
                 $geoNear: {
-                   near: { type: "Point", coordinates },
-                   distanceField: "destination_loc.calculated",
-                   maxDistance: 0,
-        
-                   maxDistance: 10000000000000000,
-                   includeLocs: "destination_loc",
-        
-                   spherical: true
+                    near: { type: "Point", coordinates },
+                    distanceField: "destination_loc.calculated",
+                    maxDistance: 0,
+
+                    maxDistance: 10000000000000000,
+                    includeLocs: "destination_loc",
+
+                    spherical: true
                 }
-              },               
-                       
+            },
+            {
+                $match: {
+                    keywords: {
+                        $elemMatch: {
+                            // $eq: "ood"
+                            $regex: q
+                        }
+                    }
+                }
+            },
+
             {
                 $lookup:
                 {
@@ -43,11 +58,11 @@ module.exports = (app) => {
                 }
             },
             {
-                $unwind:{path: '$res_user', preserveNullAndEmptyArrays: true}
-                
-            },                   
-           
-        ]     
+                $unwind: { path: '$res_user', preserveNullAndEmptyArrays: true }
+
+            },
+
+        ]
         jesteService.query(criteria)
             .then(jestes => res.json(jestes))
     })
