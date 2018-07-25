@@ -3,7 +3,48 @@ const JESTES_URL = '/jeste';
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
-        const criteria = {};
+        var coordinates = req.query.coords.split(',').map(coord => +coord)
+        const criteria = [
+            {
+                $geoNear: {
+                   near: { type: "Point", coordinates },
+                   distanceField: "destination_loc.calculated",
+                   maxDistance: 0,
+        
+                   maxDistance: 10000000000000000,
+                   includeLocs: "destination_loc",
+        
+                   spherical: true
+                }
+              },               
+                       
+            {
+                $lookup:
+                {
+                    from: 'user',
+                    localField: 'req_user_id',
+                    foreignField: '_id',
+                    as: 'req_user'
+                }
+            },
+            {
+                $unwind: '$req_user'
+            },
+            {
+                $lookup:
+                {
+                    from: 'user',
+                    localField: 'res_user_id',
+                    foreignField: '_id',
+                    as: 'res_user'
+                }
+            },
+            {
+                $unwind:{path: '$res_user', preserveNullAndEmptyArrays: true}
+                
+            },                   
+           
+        ]     
         jesteService.query(criteria)
             .then(jestes => res.json(jestes))
     })

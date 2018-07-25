@@ -5,23 +5,10 @@ const dbCol = 'jeste';
 function query(filter) {
     console.log('Filters', filter);
 
-    return mongoService.connect()
+    return mongoService.connect(criteria)
         .then(db => {
-            // var filters = {};
-            // if (filter) {
-            //     filters = {
-            //         $and: [
-            //             {
-            //                 $or: [
-            //                     { name: filter.txt },
-            //                     { type: filter.txt }
-            //                 ]
-            //             },
-            //             { inStock: filter.inStock }
-            //         ]
-            //     }
-            // }
-            return db.collection(dbCol).find({}).toArray()
+      
+            return db.collection(dbCol).aggregate(criteria).toArray()
         })
 }
 
@@ -70,3 +57,6 @@ module.exports = {
     add,
     update
 }
+
+
+
