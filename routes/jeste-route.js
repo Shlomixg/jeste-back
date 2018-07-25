@@ -3,11 +3,7 @@ const JESTES_URL = '/jeste';
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
-        const criteria = {
-            txt: req.query.q,
-            minPrice: req.query.minPrice,
-            inStock: req.query.inStock
-        };
+        const criteria = {};
         jesteService.query(criteria)
             .then(jestes => res.json(jestes))
     })
