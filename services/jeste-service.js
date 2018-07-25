@@ -2,8 +2,8 @@ const mongoService = require('./mongo-service')
 const ObjectId = require('mongodb').ObjectId;
 const dbCol = 'jeste';
 
-function query(filter) {
-    console.log('Filters', filter);
+function query(criteria) {
+    console.log('Filters', criteria);
 
     return mongoService.connect(criteria)
         .then(db => {

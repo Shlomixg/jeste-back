@@ -3,7 +3,10 @@ const JESTES_URL = '/jeste';
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
-        var coordinates = req.query.coords.split(',').map(coord => +coord)
+        var coordinates
+
+        if(!req.query || !req.query.coords) coordinates = [32.0853, 34.7818]
+        else coordinates = req.query.coords.split(',').map(coord => +coord)
         const criteria = [
             {
                 $geoNear: {
