@@ -21,7 +21,7 @@ module.exports = (app) => {
 
                     maxDistance: 10000000000000000,
                     includeLocs: "destination_loc",
-
+            
                     spherical: true
                 }
             },
