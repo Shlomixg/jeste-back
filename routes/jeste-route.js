@@ -11,53 +11,54 @@ module.exports = (app) => {
         if (!req.query || !req.query.q) q = ''
         else q = new RegExp(req.query.q, 'igm')
         console.log("query:", q);
+        // var criteria = {}
+        coordinates = [32.0853, 34.7818]
 
         const criteria = [
             {
-                $geoNear: {
-                    near: { type: "Point", coordinates },
-                    distanceField: "destination_loc.calculated",
-                    maxDistance: 0,
-                    maxDistance: 10000000000000000,
-                    includeLocs: "destination_loc",
-                    spherical: true
+               "$geoNear": {
+                    "near": { "type": "Point", "coordinates": coordinates },
+                    "distanceField": "dist",
+                    // minDistance: 0,
+                    // maxDistance: 10000000000000000,
+                    "spherical": true
                 }
             },
-            {
-                $match: {
-                    keywords: {
-                        $elemMatch: {
-                            // $eq: "ood"
-                            $regex: q
-                        }
-                    }
-                }
-            },
+            // {
+            //     $match: {
+            //         keywords: {
+            //             $elemMatch: {
+            //                 // $eq: "ood"
+            //                 $regex: q
+            //             }
+            //         }
+            //     }
+            // },
 
-            {
-                $lookup:
-                {
-                    from: 'user',
-                    localField: 'req_user_id',
-                    foreignField: '_id',
-                    as: 'req_user'
-                }
-            },
-            {
-                $unwind: '$req_user'
-            },
-            {
-                $lookup:
-                {
-                    from: 'user',
-                    localField: 'res_user_id',
-                    foreignField: '_id',
-                    as: 'res_user'
-                }
-            },
-            {
-                $unwind: { path: '$res_user', preserveNullAndEmptyArrays: true }
-            },
+            // {
+            //     $lookup:
+            //     {
+            //         from: 'user',
+            //         localField: 'req_user_id',
+            //         foreignField: '_id',
+            //         as: 'req_user'
+            //     }
+            // },
+            // {
+            //     $unwind: { path: '$req_user', preserveNullAndEmptyArrays: true }
+            // },
+            // {
+            //     $lookup:
+            //     {
+            //         from: 'user',
+            //         localField: 'res_user_id',
+            //         foreignField: '_id',
+            //         as: 'res_user'
+            //     }
+            // },
+            // {
+            //     $unwind: { path: '$res_user', preserveNullAndEmptyArrays: true }
+            // },
         ]
         jesteService.query(criteria)
             .then(jestes => res.json(jestes))
@@ -91,3 +92,4 @@ module.exports = (app) => {
             .then(jeste => res.json(jeste))
     })
 }
+

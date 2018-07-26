@@ -4,11 +4,19 @@
         "jestes_res": [],
         "primary_loc": {
             "type": "Point",
-            "coordinates": [32.0853, 34.781768]
+            "coordinates": [
+                32.0853,
+                34.781768
+            ]
         },
         "balance": 100,
         "rating": 5,
-        "details": { "firstName": "John", "lastName": "Doe", "Age": 30, "gender": "Male"},
+        "details": {
+            "firstName": "John",
+            "lastName": "Doe",
+            "Age": 30,
+            "gender": "Male"
+        },
         "password": "1234",
         "email": "d@d.com"
     },
@@ -17,11 +25,19 @@
         "jestes_res": [],
         "primary_loc": {
             "type": "Point",
-            "coordinates": [32.0953, 34.721768]
+            "coordinates": [
+                32.0953,
+                34.721768
+            ]
         },
         "balance": 100,
         "rating": 2,
-        "details": { "firstName": "Shlomit", "lastName": "Itait", "Age": 40, "gender": "Female"},
+        "details": {
+            "firstName": "Shlomit",
+            "lastName": "Itait",
+            "Age": 40,
+            "gender": "Female"
+        },
         "password": "1234",
         "email": "a@a.com"
     }
