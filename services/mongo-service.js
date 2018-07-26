@@ -7,8 +7,8 @@ function connectToMongo() {
     // Reuse existing connection if exist
     if (dbConn) return Promise.resolve(dbConn);
     const MongoClient = require('mongodb').MongoClient;
-    const url = (!process.env.PORT) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
-    // const url = (false) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
+    // const url = (!process.env.PORT) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
+    const url = (false) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
 
     return MongoClient.connect(url, { useNewUrlParser: true })
         .then(client => {
