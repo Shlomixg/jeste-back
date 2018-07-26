@@ -24,11 +24,8 @@ module.exports = (app) => {
             },
             {
                 $match: {
-                    keywords: {
-                        $elemMatch: {
-                            // $eq: "ood"
-                            $regex: q
-                        }
+                    keywords: { 
+                        $elemMatch: { $regex: q } 
                     }
                 }
             },
