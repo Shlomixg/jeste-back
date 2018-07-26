@@ -14,8 +14,7 @@ module.exports = (app) => {
 				res.json(user);
 			})
 			.catch(err => {
-				console.log('Access Denied');
-				return err;
+				res.status(401).end('nouser found')
 			})
 	})
 
