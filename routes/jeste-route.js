@@ -3,13 +3,13 @@ const JESTES_URL = '/jeste';
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
-        var coordinates, q;
+        var coordinates, qText;
 
         if (!req.query || !req.query.coords) coordinates = [32.0853, 34.7818]
         else coordinates = req.query.coords.split(',').map(coord => +coord)
-        if (!req.query || !req.query.q) q = ''
-        else q = new RegExp(req.query.q, 'igm')
-        console.log("Query:", q);
+        if (!req.query || !req.query.q) qText = ''
+        else qText = new RegExp(req.query.q, 'igm')
+        console.log("Query:", qText);
         coordinates = [33.0853, 35.7818]
 
         const criteria = [
@@ -24,8 +24,8 @@ module.exports = (app) => {
             },
             {
                 $match: {
-                    keywords: { 
-                        $elemMatch: { $regex: q } 
+                    keywords: {
+                        $elemMatch: { $regex: qText }
                     }
                 }
             },

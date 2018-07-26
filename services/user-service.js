@@ -12,13 +12,13 @@ function query(loggedNickname = null) {
         .then(db => {
             if (loggedNickname) return db.collection(dbCollection).findOne(loggedNickname);
             else return db.collection(dbCollection).find({}).toArray()
-            
+
         })
 }
 
 function checkLogin(user) {
     return mongoService.connect()
-        .then(db => db.collection('user').findOne({$and: [{email: user.email}, {password: user.password}]}))
+        .then(db => db.collection('user').findOne({ $and: [{ email: user.email }, { password: user.password }] }))
 }
 
 // function getById(userId) {
