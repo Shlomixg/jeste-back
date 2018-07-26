@@ -5,6 +5,8 @@ module.exports = (app) => {
 	app.put(`/login`, (req, res) => {
 
 		const loggingUser = req.body.user;
+		console.log('before logged',loggingUser);
+		
 		userService.checkLogin(loggingUser)
 			.then(user => {
 				req.session.user = user;
@@ -18,10 +20,10 @@ module.exports = (app) => {
 			})
 	})
 
-	app.post(`/logout`, (req, res) => {
+	app.put(`/logout`, (req, res) => {
 		console.log('Session: \n', req.session);
-		req.session.user = null;
-		console.log('Logged Out');
+		delete req.session.user
+		console.log('Logged Out', req.session.user);
 		res.sendStatus(200)
 		// return Promise.resolve('logged out');
 	})
@@ -32,6 +34,8 @@ module.exports = (app) => {
 		res.json(user)
 	})
 	app.put('/checklogin', (req, res) => {
+		console.log('checklogin', req.session.user)
+		
 		if (req.session.user) return res.json(req.session.user)
 		else res.status(401).send('not logged in')
 

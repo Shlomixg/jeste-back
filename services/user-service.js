@@ -17,7 +17,6 @@ function query(loggedNickname = null) {
 }
 
 function checkLogin(user) {
-    
     return mongoService.connect()
         .then(db => db.collection('user').findOne({$and: [{email: user.email}, {password: user.password}]}))
 }

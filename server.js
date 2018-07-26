@@ -21,7 +21,7 @@ app.use(session({
     secret: '1234567890QWERTY',
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: false, maxAge: 8.64e+7 * 3 }
 }));
 
 // Add Specific routes
