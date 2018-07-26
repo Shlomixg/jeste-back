@@ -7,14 +7,15 @@ module.exports = (app) => {
 		console.log('before logged', loggingUser);
 		userService.checkLogin(loggingUser)
 			.then(user => {
-				if (!user) throw 'Wrong login details';
+				if (!user) throw 'No match details found';
 				req.session.user = user;
 				console.log('Session: \n', req.session);
 				console.log('Access Aprroved');
 				res.json(user);
 			})
 			.catch(err => {
-				res.status(401).end('nouser found')
+				console.log('Access Denied \n', err);
+				return res.status(401).end('nouser found')
 			})
 	})
 
