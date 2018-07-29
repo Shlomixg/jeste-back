@@ -1,5 +1,7 @@
 const jesteService = require('../services/jeste-service');
 const JESTES_URL = '/jeste';
+const ObjectId = require('mongodb').ObjectId;
+
 
 module.exports = (app) => {
     app.get(`${JESTES_URL}`, (req, res) => {
@@ -73,16 +75,20 @@ module.exports = (app) => {
     })
 
     app.post(`${JESTES_URL}`, (req, res) => {
-        if (!req.session.user.isAdmin) return Promise.reject('No Permission');
+        // if (!req.session.user.isAdmin) return Promise.reject('No Permission');
+        const ObjectId = require('mongodb').ObjectId;
+
         const jeste = req.body;
+        jeste.req_user_id = ObjectId(jeste.req_user_id)
         jeste.createdAt = Date.now();
         jesteService.add(jeste)
             .then(jeste => res.json(jeste))
     })
 
     app.put(`${JESTES_URL}/:jesteId`, (req, res) => {
-        if (!req.session.user.isAdmin) return Promise.reject('No Permission');
+        // if (!req.session.user.isAdmin) return Promise.reject('No Permission');
         const jeste = req.body;
+        jeste.req_user_id = ObjectId(jeste.req_user_id)
         jesteService.update(jeste)
             .then(jeste => res.json(jeste))
     })
