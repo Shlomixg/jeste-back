@@ -7,18 +7,17 @@ const dbCollection = 'user';
 //         .then(db => db.collection('user').findOne({ nickname }))
 // }
 
-function query(loggedNickname = null) {
+function query(userEmail = null) {
     return mongoService.connect()
         .then(db => {
-            if (loggedNickname) return db.collection(dbCollection).findOne(loggedNickname);
+            if (userEmail) return db.collection(dbCollection).findOne({"email": userEmail});
             else return db.collection(dbCollection).find({}).toArray()
-
         })
 }
 
 function checkLogin(user) {
     return mongoService.connect()
-        .then(db => db.collection('user').findOne({ $and: [{ email: user.email }, { password: user.password }] }))
+        .then(db => db.collection('user').findOne({ $and: [{ email: user.email }, { password: user.password }] }));
 }
 
 // function getById(userId) {
