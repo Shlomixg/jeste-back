@@ -1,33 +1,63 @@
-const mongoService = require('./mongo-service')
+const mongoService = require('./mongo-service');
 const ObjectId = require('mongodb').ObjectId;
 const dbCollection = 'user';
 
-// function checkLogin({ nickname }) {
-//     return mongoService.connect()
-//         .then(db => db.collection('user').findOne({ nickname }))
-// }
+function query(id = null) {
+	let criteria = {};
+	if (id) {
+		id = new ObjectId(id);
+		criteria = [
+			{
+				$match: { _id: id }
+			},
+			{
+				$lookup: {
+					from: 'jeste',
+					localField: '_id',
+					foreignField: 'req_user_id',
+					as: 'req_jestes'
+				}
+			},
+			{
+				$lookup: {
+					from: 'jeste',
+					localField: '_id',
+					foreignField: 'res_user_id',
+					as: 'res_jestes'
+				}
+			}
+		];
+	}
+	return mongoService.connect().then(db => {
+		if (id){
+            console.log('inside thr if ')
+			return db
+				.collection(dbCollection)
+				.aggregate(criteria)
+				.toArray();
+        }
+		else
+			return db
+				.collection(dbCollection)
+				.find({})
+				.toArray();
+	});
+}
 
-function query(userEmail = null) {
-    return mongoService.connect()
-        .then(db => {
-            if (userEmail) return db.collection(dbCollection).findOne({"email": userEmail});
-            else return db.collection(dbCollection).find({}).toArray()
-        })
+function getUserById(id) {
+	id = ObjectId(id);
+	return mongoService.connect().then(db => {
+		return db.collection(dbCollection).findOne({ _id: id });
+	});
 }
 
 function checkLogin(user) {
-    return mongoService.connect()
-        .then(db => db.collection('user').findOne({ $and: [{ email: user.email }, { password: user.password }] }));
+	return mongoService.connect().then(db =>
+		db.collection('user').findOne({
+			$and: [{ email: user.email }, { password: user.password }]
+		})
+	);
 }
-
-// function getById(userId) {
-//     userId = new ObjectId(userId)
-//     return mongoService.connect()
-//         .then(db => {
-//             const collection = db.collection(dbCollection);
-//             return collection.findOne({ _id: userId })
-//         })
-// }
 
 // function remove(userId) {
 //     userId = new ObjectId(userId);
@@ -63,10 +93,11 @@ function checkLogin(user) {
 // }
 
 module.exports = {
-    query,
-    checkLogin
-    // getById,
-    // remove,
-    // add,
-    // update
-}
+	query,
+	getUserById,
+	checkLogin
+	// getById,
+	// remove,
+	// add,
+	// update
+};

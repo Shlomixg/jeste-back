@@ -33,7 +33,7 @@ module.exports = (app) => {
     app.put('/checklogin', (req, res) => {
         console.log('Check Login:', req.session.user);
         if (req.session.user) {
-            userService.query(req.session.user.email)
+            userService.getUserById(req.session.user._id)
                 .then(user => res.json(user));
         }
         else res.send('not logged in');
