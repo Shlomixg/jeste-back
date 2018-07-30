@@ -29,14 +29,12 @@ function query(id = null) {
 		];
 	}
 	return mongoService.connect().then(db => {
-		if (id){
-            console.log('inside thr if ')
+		if (id) {
 			return db
 				.collection(dbCollection)
 				.aggregate(criteria)
 				.toArray();
-        }
-		else
+		} else
 			return db
 				.collection(dbCollection)
 				.find({})
