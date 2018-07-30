@@ -80,7 +80,7 @@ module.exports = (app) => {
 
         const jeste = req.body;
         jeste.req_user_id = ObjectId(jeste.req_user_id)
-        jeste.createdAt = Date.now();
+        jeste.created_at = Date.now();
         jesteService.add(jeste)
             .then(jeste => res.json(jeste))
     })
