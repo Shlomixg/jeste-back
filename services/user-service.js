@@ -66,17 +66,17 @@ function checkLogin(user) {
 //         })
 // }
 
-// function add(user) {
-//     return mongoService.connect()
-//         .then(db => {
-//             const collection = db.collection(dbCollection);
-//             return collection.insertOne(user)
-//                 .then(result => {
-//                     user._id = result.insertedId;
-//                     return user;
-//                 })
-//         })
-// }
+function add(user) {
+    return mongoService.connect()
+        .then(db => {
+            const collection = db.collection(dbCollection);
+            return collection.insertOne(user)
+                .then(result => {
+                    user._id = result.insertedId;
+                    return user;
+                })
+        })
+}
 
 // function update(user) {
 //     user._id = new ObjectId(user._id)
@@ -93,9 +93,9 @@ function checkLogin(user) {
 module.exports = {
 	query,
 	getUserById,
-	checkLogin
+	checkLogin,
+	add
 	// getById,
 	// remove,
-	// add,
 	// update
 };

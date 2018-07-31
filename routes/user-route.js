@@ -13,11 +13,11 @@ module.exports = app => {
 	//         .then(() => res.end(`User ${userId} Deleted `))
 	// })
 
-	// app.post(`${USERS_URL}`, (req, res) => {
-	//     const user = req.body;
-	//     userService.add(user)
-	//         .then(user => res.json(user))
-	// })
+	app.post(`${USERS_URL}`, (req, res) => {
+	    const user = req.body;
+	    userService.add(user)
+	        .then(user => res.json(user))
+	})
 
 	// app.put(`${USERS_URL}/:userId`, (req, res) => {
 	//     const user = req.body;
