@@ -75,8 +75,12 @@ module.exports = app => {
 	});
 
 	app.delete(`${JESTES_URL}/:jesteId`, (req, res) => {
-		if (!req.session.user.isAdmin) return Promise.reject('No Permission');
+		// if (!req.session.user.isAdmin) return Promise.reject('No Permission');
 		const jesteId = req.params.jesteId;
+		console.log(jesteId);
+
+		
+		
 		jesteService
 			.remove(jesteId)
 			.then(() => res.end(`Jeste ${jesteId} Deleted `));
