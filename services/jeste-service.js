@@ -3,7 +3,6 @@ const ObjectId = require('mongodb').ObjectId;
 const dbCol = 'jeste';
 
 function query(criteria) {
-    console.log('Filters:', criteria);
     return mongoService.connect(criteria)
         .then(db => {
             return db.collection(dbCol).aggregate(criteria).toArray()
