@@ -6,31 +6,13 @@ const app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 const PORT = process.env.PORT || 3000;
-var getRoom = require('./room-service');
-
+var socketService = require('./services/socket-service');
 
 var server = app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 
 var io = require('socket.io')(server);
 
-io.on('connection', function(socket) {
-    console.log('a user connected');
-    socket.emit('elad', 'bla bla bla')
-    socket.on('pingServer', x => {
-        console.log('in the ping server')
-	})
-	var userRoom;
-	var user;
-	socket.on('roomRequested', data => {
-		currUser = data.user;
-		reqUserId = data.req_user_id
-		// socket.join(userRoom.id);
-		// // io.to - send to everyone in the room (include the sender)
-		// io.to(userRoom.id).emit('userConnected', user);
-		console.log('this is data',data);
-		
-	});
-});
+io.on('connection', socketService.socket);
 
 app.use(
 	cors({
