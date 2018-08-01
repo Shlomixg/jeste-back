@@ -1,57 +1,51 @@
 const jesteService = require('./jeste-service');
 const getRoom = require('./room-service');
-var loggedUsers = {}
+const userService = require('./user-service')
+var loggedUsers = {};
 
-function socket(socket) {
-    console.log('a user connected', socket.id);
-	socket.on('userLogged', data => {
-		loggedUsers[data.userId] = socket.id
-		console.log(loggedUsers);
+function socket(socket,io) {
+	var sokcetUserId;
+
+	socket.on('userLogged',( {userId}) => {
+		sokcetUserId = userId;
+        loggedUsers[userId] = socket.id;
+        console.log('user logged in socket',{userId});
+        userService.query(userId).then(([user]) => {
+            console.log({
+                userDetails : user.details,
+                id:  user._id,
+                // res_jestes :  user.res_jestes
+            }
+            )
+            return [...user.req_jestes, ...user.res_jestes].map(jeste => jeste._id)
+        })
+        .then(ids => {
+            ids.forEach(id => socket.join(id))
+        })
 	});
-	var userRoom
-	var currUser;
-	var reqUserId
-	socket.on('roomRequested', data => {
-		currUser = data.user;
-		reqUserId = data.req_user_id
-		userRoom = getRoom(currUser._id, reqUserId)
-		socket.join(userRoom.id);
+
+	// socket.on('enterJesteRoom', ({reqUserId, jesteId}) => {
+	// 	socket.join(jesteId);
+	// 	io.to(jesteId).emit('userEntered', user);
+	// });
+
+	socket.on('sendMsg', ({ msg, jesteId}) => {
+        // io.to(reqUserId).emit('userEntered', user);
+        console.log('user', sokcetUserId, ' sent msg')
+		socket.to(jesteId).emit('reciveMsg', { msg, user: sokcetUserId, jesteId });
 	});
-	socket.on('messageSent', data => {
-		console.log('sending to',loggedUsers[data.to]);
-		
-		
-		io.to(`${loggedUsers[data.to]}`).emit('gotMsg', data);
 
-		// io.to(userRoom).emit('msgReceived', data);
-
-
-	})
-	socket.on('respondJeste', data => {
-        console.log('responded', data);
-        data.jeste.status = 1;
-        data.jeste.res_user_id = data.resUserId;
-        jesteService.update(jeste)
-            .then(jeste => {
-                data.jeste = jeste;
-                io.to(`${loggedUsers[data.jeste.req_user_id]}`).emit('gotResponse', data);
-            })
-		// io.to(userRoom).emit('msgReceived', data);
-
-
-	})
-
-	socket.on('disconnect', function () {
+	socket.on('disconnect', function() {
 		for (let userId in loggedUsers) {
-			if (loggedUsers[userId] = socket.id) {
-				delete loggedUsers[userId]
+			if ((loggedUsers[userId] = socket.id)) {
+				delete loggedUsers[userId];
 				console.log(loggedUsers);
-				
-				return
+
+				return;
 			}
-		}		
-	  });
+		}
+	});
 }
 module.exports = {
-    socket
-}
+	socket
+};

@@ -12,7 +12,7 @@ var server = app.listen(PORT, () => console.log(`Server listening on port ${PORT
 
 var io = require('socket.io')(server);
 
-io.on('connection', socketService.socket);
+io.on('connection', socket => socketService.socket(socket,io));
 
 app.use(
 	cors({
