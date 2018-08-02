@@ -26,6 +26,7 @@ function remove(jesteId) {
 }
 
 function add(jeste) {
+    jeste.req_user_id =  new ObjectId(jeste.req_user_id)
     return mongoService.connect()
         .then(db => {
             return db.collection(dbCol).insertOne(jeste)
@@ -38,6 +39,8 @@ function add(jeste) {
 
 function update(jeste) {
     jeste._id = new ObjectId(jeste._id)
+    jeste.req_user_id = new ObjectId(jeste.req_user_id)
+    if (jeste.res_user_id) jeste.res_user_id = new ObjectId(jeste.res_user_id)
     return mongoService.connect()
         .then(db => {
             return db.collection(dbCol).updateOne({ _id: jeste._id }, { $set: jeste })
