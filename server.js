@@ -8,6 +8,7 @@ var session = require('express-session');
 const PORT = process.env.PORT || 3000;
 var socketService = require('./services/socket-service');
 
+app.use(express.static('dist'));
 var server = app.listen(PORT, () =>
 	console.log(`Server listening on port ${PORT}`)
 );
@@ -15,7 +16,6 @@ var server = app.listen(PORT, () =>
 var io = require('socket.io')(server);
 
 io.on('connection', socket => socketService.socket(socket, io));
-app.use(express.static('dist'));
 app.use(
 	cors({
 		origin: ['http://localhost:8080'],
