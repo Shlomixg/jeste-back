@@ -1,6 +1,7 @@
 const jesteService = require('./jeste-service');
 const getRoom = require('./room-service');
 const userService = require('./user-service');
+const chatSerivce = require('./chat-service');
 var loggedUsers = {};
 
 function socket(socket, io) {
@@ -57,7 +58,8 @@ function socket(socket, io) {
 	});
 
 	socket.on('sendMsg', ({ msg, jesteId }) => {
-        console.log('MSG WAS SENT POPO',  io.sockets.adapter.rooms);
+		chatSerivce.update({msg, jesteId})
+		.then(x => console.log('this is result of updating', x))
 
         
         msg.author = 'them'

@@ -45,6 +45,8 @@ addJesteRoutes(app);
 // addReviewRoutes(app);
 const addAuthRoutes = require('./routes/auth-route');
 addAuthRoutes(app);
+const addChatRoutes = require('./routes/chat-route');
+addChatRoutes(app);
 
 
 app.get('/', (req, res) => res.send('Hello Jeste'));

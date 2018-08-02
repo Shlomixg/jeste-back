@@ -30,8 +30,9 @@ function add(jeste) {
     return mongoService.connect()
         .then(db => {
             return db.collection(dbCol).insertOne(jeste)
-                .then(result => {
+                .then(result => {                    
                     jeste._id = result.insertedId;
+
                     return jeste;
                 })
         })
