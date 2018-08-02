@@ -8,13 +8,14 @@ var session = require('express-session');
 const PORT = process.env.PORT || 3000;
 var socketService = require('./services/socket-service');
 
-
-var server = app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+var server = app.listen(PORT, () =>
+	console.log(`Server listening on port ${PORT}`)
+);
 
 var io = require('socket.io')(server);
 
-io.on('connection', socket => socketService.socket(socket,io));
-
+io.on('connection', socket => socketService.socket(socket, io));
+app.use(express.static('dist'));
 app.use(
 	cors({
 		origin: ['http://localhost:8080'],
@@ -47,6 +48,5 @@ const addAuthRoutes = require('./routes/auth-route');
 addAuthRoutes(app);
 const addChatRoutes = require('./routes/chat-route');
 addChatRoutes(app);
-
 
 app.get('/', (req, res) => res.send('Hello Jeste'));
