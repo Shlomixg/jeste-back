@@ -42,11 +42,10 @@ module.exports = app => {
 								}
 							]
 						},
-						// Using trenary if to decide weather filter by category or not
+						// Using ternary if to decide whether filter by category/price or not
 						{ ...(category ? { category } : {}) },
 						{ ...(price ? { price: { $lte: price } } : {})}
 					],
-					// Using trenary if to decide weather filter by price or not
 				},
 			},
 			{
