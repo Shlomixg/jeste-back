@@ -38,6 +38,7 @@ function socket(socket, io) {
 	// 	socket.join(jesteId);
 	// 	io.to(jesteId).emit('userEntered', user);
 	// });
+	
 	socket.on('jesteResponded', ({jeste}) => {
         let jesteId = jeste._id;
         console.log('this is the id before', jesteId);
@@ -45,7 +46,7 @@ function socket(socket, io) {
 		socket.join(jesteId);
 		delete jeste.req_user;
 		delete jeste.res_user;
-		console.log('JEST UT CLICKED', jeste);
+		console.log('JESTE JUST CLICKED', jeste);
 
 		jesteService.update(jeste)
 		.then(_ => {
@@ -61,20 +62,12 @@ function socket(socket, io) {
 		chatSerivce.update({msg, jesteId})
 		.then(x => console.log('this is result of updating', x))
 
-        
         msg.author = 'them'
-		socket
-			.to(jesteId)
-			.emit('receivedMsg', { msg });
+		socket.to(jesteId).emit('receivedMsg', { msg });
     });
     socket.on('isTyping' , ({jesteId}) => {
-        console.log('someone is TYPING', jesteId);
-        
-        socket
-        .to(jesteId)
-        .emit('isTyping');
-        
-
+        console.log('someone is TYPING', jesteId);   
+        socket.to(jesteId).emit('isTyping');
     })
 
 	socket.on('disconnect', function() {
@@ -82,12 +75,12 @@ function socket(socket, io) {
 			if ((loggedUsers[userId] = socket.id)) {
 				delete loggedUsers[userId];
 				console.log(loggedUsers);
-
 				return;
 			}
 		}
 	});
 }
+
 module.exports = {
 	socket
 };

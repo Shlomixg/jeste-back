@@ -1,6 +1,6 @@
 const jesteService = require('../services/jeste-service');
-const JESTES_URL = '/jeste';
 const ObjectId = require('mongodb').ObjectId;
+const JESTES_URL = '/jeste';
 
 module.exports = app => {
 	app.get(`${JESTES_URL}`, (req, res) => {
@@ -84,7 +84,6 @@ module.exports = app => {
 	app.delete(`${JESTES_URL}/:jesteId`, (req, res) => {
 		// if (!req.session.user.isAdmin) return Promise.reject('No Permission');
 		const jesteId = req.params.jesteId;
-		console.log(jesteId);
 		jesteService.remove(jesteId)
 			.then(() => res.end(`Jeste ${jesteId} Deleted `));
 	});

@@ -1,6 +1,6 @@
 const userService = require('../services/user-service');
 
-module.exports = (app) => {
+module.exports = app => {
 
     app.put(`/login`, (req, res) => {
         const loggingUser = req.body.user;
@@ -8,7 +8,6 @@ module.exports = (app) => {
             .then(user => {
                 if (!user) throw 'No match details found';
                 req.session.user = user;
-                // console.log('Session: \n', req.session);
                 console.log('Access Aprroved');
                 res.json(user);
             })
@@ -30,11 +29,10 @@ module.exports = (app) => {
         res.json(user);
     })
     app.put('/checklogin', (req, res) => {
-        // console.log('Check Login:', req.session.user);
         if (req.session.user) {
             userService.getUserById(req.session.user._id)
                 .then(user => res.json(user));
         }
-        else res.send('not logged in');
+        else res.send('Not logged in');
     })
 }
