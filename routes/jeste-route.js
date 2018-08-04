@@ -8,10 +8,12 @@ module.exports = app => {
 		let coordinates = req.query.coords.split(',').map(coord => +coord);
 		let qText = new RegExp(req.query.q, 'igm');
 		let maxDistance = +req.query.maxDistance;
-		let price = +req.query.price;
-		let category = (req.query.category === 'All') ? '' : req.query.category;
+		let price = +req.query.maxPrice;
+		console.log('this is ', price);
+		let category = req.query.category === 'All' ? '' : req.query.category;
 		console.log('Coords:', coordinates);
 		console.log('Query:', qText);
+		price = 100000000000000
 		const criteria = [
 			{
 				$geoNear: {
@@ -34,7 +36,6 @@ module.exports = app => {
 								},
 								{
 									description: { $regex: qText }
-
 								},
 								{
 									title: { $regex: qText }
@@ -43,11 +44,10 @@ module.exports = app => {
 						},
 						// Using trenary if to decide weather filter by category or not
 						{ ...(category ? { category } : {}) }
-
-					]
+					],
+					// Using trenary if to decide weather filter by price or not
+					// ...(price ? { price: { lte: price } } : {})
 				},
-				// Using trenary if to decide weather filter by price or not
-				...(price ? { price: { lte: price } } : {})
 			},
 			{
 				$lookup: {
@@ -72,7 +72,6 @@ module.exports = app => {
 				$unwind: { path: '$res_user', preserveNullAndEmptyArrays: true }
 			}
 		];
-		console.log('--------------- Criteria: --------------- \n', criteria);
 		jesteService.query(criteria).then(jestes => res.json(jestes));
 	});
 
@@ -85,7 +84,8 @@ module.exports = app => {
 		// if (!req.session.user.isAdmin) return Promise.reject('No Permission');
 		const jesteId = req.params.jesteId;
 		console.log(jesteId);
-		jesteService.remove(jesteId)
+		jesteService
+			.remove(jesteId)
 			.then(() => res.end(`Jeste ${jesteId} Deleted `));
 	});
 
