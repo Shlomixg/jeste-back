@@ -13,7 +13,7 @@ module.exports = app => {
 		let category = req.query.category === 'All' ? '' : req.query.category;
 		console.log('Coords:', coordinates);
 		console.log('Query:', qText);
-		price = 100000000000000
+		// price = 12
 		const criteria = [
 			{
 				$geoNear: {
@@ -43,10 +43,10 @@ module.exports = app => {
 							]
 						},
 						// Using trenary if to decide weather filter by category or not
-						{ ...(category ? { category } : {}) }
+						{ ...(category ? { category } : {}) },
+						{ ...(price ? { price: { $lte: price } } : {})}
 					],
 					// Using trenary if to decide weather filter by price or not
-					// ...(price ? { price: { lte: price } } : {})
 				},
 			},
 			{
