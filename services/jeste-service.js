@@ -26,11 +26,11 @@ function remove(jesteId) {
 }
 
 function add(jeste) {
-    jeste.req_user_id =  new ObjectId(jeste.req_user_id)
+    jeste.req_user_id = new ObjectId(jeste.req_user_id)
     return mongoService.connect()
         .then(db => {
             return db.collection(dbCol).insertOne(jeste)
-                .then(result => {                    
+                .then(result => {
                     jeste._id = result.insertedId;
 
                     return jeste;

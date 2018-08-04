@@ -1,3 +1,4 @@
+'use strict';
 var dbConn = null;
 
 const dbName = 'jeste_db';
@@ -7,7 +8,6 @@ function connectToMongo() {
     // Reuse existing connection if exist
     if (dbConn) return Promise.resolve(dbConn);
     const MongoClient = require('mongodb').MongoClient;
-    // const url = (!process.env.PORT) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
     const url = (false) ? `mongodb://localhost:27017/${dbName}` : PROD_URL;
 
     return MongoClient.connect(url, { useNewUrlParser: true })
@@ -17,7 +17,7 @@ function connectToMongo() {
             client.on('close', () => {
                 console.log('MongoDB Diconnected');
                 dbConn = null;
-            }); 
+            });
             dbConn = client.db();
             return dbConn;
         })
