@@ -21,34 +21,34 @@ module.exports = app => {
 					distanceField: 'destination_loc.calculated',
 					minDistance: 0,
 					maxDistance,
-					spherical: true
+					spherical: true,
+					query: {
+						$and: [
+							{
+								$or: [
+									{
+										keywords: {
+											$elemMatch: { $regex: qText }
+										}
+									},
+									{
+										description: { $regex: qText }
+									},
+									{
+										title: { $regex: qText }
+									}
+								]
+							},
+							// Using trenary if to decide weather filter by category or not
+							{ ...(category ? { category } : {}) },
+							{ ...(price ? { price: { $lte: price } } : {})}
+						],
+						// Using trenary if to decide weather filter by price or not
+					},
 				}
 			},
-			{
-				$match: {
-					$and: [
-						{
-							$or: [
-								{
-									keywords: {
-										$elemMatch: { $regex: qText }
-									}
-								},
-								{
-									description: { $regex: qText }
-								},
-								{
-									title: { $regex: qText }
-								}
-							]
-						},
-						// Using trenary if to decide weather filter by category or not
-						{ ...(category ? { category } : {}) },
-						{ ...(price ? { price: { $lte: price } } : {})}
-					],
-					// Using trenary if to decide weather filter by price or not
-				},
-			},
+			// { $sort : { created_at : 1} },
+			
 			{
 				$lookup: {
 					from: 'user',
