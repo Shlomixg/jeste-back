@@ -3,7 +3,6 @@ const USERS_URL = '/user';
 
 module.exports = app => {
 	app.get(`${USERS_URL}/:id?`, (req, res) => {
-		console.log('test ');
 		userService.query(req.params.id).then(users => res.json(users));
 	});
 

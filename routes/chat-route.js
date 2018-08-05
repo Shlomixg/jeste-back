@@ -3,7 +3,6 @@ const CHAT_URL = '/chat';
 
 module.exports = app => {
 	app.get(`${CHAT_URL}/:jesteId?`, (req, res) => {
-		console.log('test ');
 		chatService.query(req.params.jesteId).then(chatHistory => res.json(chatHistory));
 	});
 

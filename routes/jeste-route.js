@@ -9,10 +9,7 @@ module.exports = app => {
 		let qText = new RegExp(req.query.q, 'igm');
 		let maxDistance = +req.query.maxDistance;
 		let price = +req.query.maxPrice;
-		console.log('this is ', price);
 		let category = req.query.category === 'All' ? '' : req.query.category;
-		console.log('Coords:', coordinates);
-		console.log('Query:', qText);
 		// price = 12
 		const criteria = [
 			{
@@ -47,7 +44,6 @@ module.exports = app => {
 				}
 			},
 			// { $sort : { created_at : 1} },
-
 			{
 				$lookup: {
 					from: 'user',
