@@ -32,6 +32,8 @@ function socket(socket, io) {
 			.then(ids => {
 				ids.forEach(id => socket.join(id));
 			});
+
+			
 	});
 
 	// socket.on('enterJesteRoom', ({reqUserId, jesteId}) => {
@@ -54,7 +56,7 @@ function socket(socket, io) {
             console.log('this is the id', jesteId);
             
             
-			socket.to(jesteId).emit('reciveMsg', jeste);
+			socket.to(jesteId).emit('jesteResponded', jeste);
 		});
 	});
 
