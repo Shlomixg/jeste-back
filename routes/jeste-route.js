@@ -39,16 +39,15 @@ module.exports = app => {
 									}
 								]
 							},
-							// Using trenary if to decide weather filter by category or not
+							// Using ternary if to decide whether filter by category/price or not
 							{ ...(category ? { category } : {}) },
-							{ ...(price ? { price: { $lte: price } } : {})}
-						],
-						// Using trenary if to decide weather filter by price or not
-					},
+							{ ...(price ? { price: { $lte: price } } : {}) }
+						]
+					}
 				}
 			},
 			// { $sort : { created_at : 1} },
-			
+
 			{
 				$lookup: {
 					from: 'user',
@@ -83,7 +82,8 @@ module.exports = app => {
 	app.delete(`${JESTES_URL}/:jesteId`, (req, res) => {
 		// if (!req.session.user.isAdmin) return Promise.reject('No Permission');
 		const jesteId = req.params.jesteId;
-		jesteService.remove(jesteId)
+		jesteService
+			.remove(jesteId)
 			.then(() => res.end(`Jeste ${jesteId} Deleted `));
 	});
 
