@@ -15,6 +15,8 @@ function socket(socket, io) {
 			.then(ids => {
 				ids.forEach(id => socket.join(id));
 			});
+
+			
 	});
 
 	socket.on('jesteResponded', ({ jeste }) => {
@@ -23,7 +25,7 @@ function socket(socket, io) {
 		delete jeste.req_user;
 		delete jeste.res_user;
 		jesteService.update(jeste)
-			.then(_ => socket.to(jesteId).emit('reciveMsg', jeste));
+		.then(_ => socket.to(jesteId).emit('jesteResponded', jeste));
 	});
 
 	socket.on('sendMsg', ({ msg, jesteId }) => {
