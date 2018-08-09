@@ -13,14 +13,25 @@ module.exports = app => {
 	// })
 
 	app.post(`${CHAT_URL}`, (req, res) => {
-	    const msg = req.body;
-	    chatService.add(msg)
-	        .then(_ => res.end())
+	    const {userId, thisUserId} = req.body;
+	    chatService.getHistory({userId, thisUserId} )
+	        .then(chatHistory => res.json(chatHistory))
 	})
 
-	// app.put(`${USERS_URL}/:userId`, (req, res) => {
-	//     const user = req.body;
-	//     userService.update(user)
-	//         .then(user => res.json(user))
-	// })
+	app.put(`${CHAT_URL}`, (req, res) => {
+		const {ids, userId, friendId} = req.body
+		console.log('user id', userId);
+		console.log('friend id', friendId);
+		
+	    chatService.markRead(ids, userId, friendId)
+	        .then(_ => res.json())
+	})
+	app.put(`${CHAT_URL}/chat_list`, (req, res) => {
+		const {userId} = req.body
+
+		
+	    chatService.getChatList(userId)
+	        .then(chatList => res.json(chatList))
+	})
+
 };
