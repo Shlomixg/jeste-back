@@ -4,13 +4,11 @@ const JESTES_URL = '/jeste';
 
 module.exports = app => {
 	app.get(`${JESTES_URL}`, (req, res) => {
-		console.log('--- ReqQuery: ---', req.query);
 		let coordinates = req.query.coords.split(',').map(coord => +coord);
 		let qText = new RegExp(req.query.q, 'igm');
 		let maxDistance = +req.query.maxDistance;
 		let price = +req.query.maxPrice;
 		let category = req.query.category === 'All' ? '' : req.query.category;
-		// price = 12
 		const criteria = [
 			{
 				$geoNear: {
@@ -70,7 +68,12 @@ module.exports = app => {
 		jesteService.query(criteria).then(jestes => res.json(jestes));
 	});
 
-	app.get(`${JESTES_URL}/:jesteId`, (req, res) => {
+	app.get(`${JESTES_URL}/stats`, (req, res) => {
+		const criteria = [{ "$group": { _id: "$status", count: { $sum: 1 } } }, { $sort: { count: -1 } }];
+		jesteService.query(criteria).then(jestes => res.json(jestes));
+	});
+
+	app.get(`${JESTES_URL}/:jesteId?`, (req, res) => {
 		const jesteId = req.params.jesteId;
 		jesteService.getById(jesteId).then(jeste => res.json(jeste));
 	});
