@@ -43,11 +43,11 @@ const addUserRoutes = require('./routes/user-route');
 addUserRoutes(app);
 const addJesteRoutes = require('./routes/jeste-route');
 addJesteRoutes(app);
-// const addReviewRoutes = require('./routes/review-route')
-// addReviewRoutes(app);
 const addAuthRoutes = require('./routes/auth-route');
 addAuthRoutes(app);
 const addChatRoutes = require('./routes/chat-route');
 addChatRoutes(app);
+const addNotificationRoutes = require('./routes/notification-route');
+addNotificationRoutes(app);
 
 app.get('/', (req, res) => res.send('Hello Jeste'));

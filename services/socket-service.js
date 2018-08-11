@@ -1,7 +1,9 @@
 const jesteService = require('./jeste-service');
-const userService = require('./user-service');
 const chatSerivce = require('./chat-service');
+const notificationService = require('./notification-service');
 var loggedUsers = {};
+const ObjectId = require('mongodb').ObjectId;
+
 
 function socket(socket, io) {
 	socket.on('userLogged', ({ userId }) => {
@@ -12,37 +14,48 @@ function socket(socket, io) {
 		loggedUsers[userId] = socket.id;
 		console.log('loggged user after assign',loggedUsers);
 
-		userService
-			.query(userId)
-			.then(([user]) => {
-				var ids = [...user.req_jestes, ...user.res_jestes].map(
-					jeste => jeste._id
-				);
-				return ids;
-			})
-			.then(ids => {
-				ids.forEach(id => socket.join(id));
-			});
 	});
 
-	socket.on('jesteResponded', ({ jeste }) => {
+	socket.on('jesteResponded', ({ jeste, user }) => {
 		let jesteId = jeste._id;
 		socket.join(jesteId);
 		delete jeste.req_user;
 		delete jeste.res_user;
 		jesteService
 			.update(jeste)
-			.then(_ => socket.to(jesteId).emit('jesteResponded', jeste));
+			.then(_ => {
+				let notification = {
+					userId: new ObjectId(jeste.req_user_id),
+					friendId: new ObjectId(user._id),
+					jesteId: new ObjectId(jeste._id),
+					img: jeste.img.secure_url,
+					txt: `${user.details.firstName} ${user.details.lastName} just responded your Jeste!`,
+					timestamp: Date.now(),
+					isRead: false
+				}
+				notificationService.add(notification)
+				.then(result => {
+					let socketId = loggedUsers[jeste.req_user_id];
+
+					if (socketId){
+						notification._id = result.insertedId
+
+						io.to(`${socketId}`).emit('receivedNotification', notification);
+
+
+					}
+
+
+
+				})
+
+
+			});
 	});
 
 	socket.on('sendMsg', msg => {
 		chatSerivce.add(msg).then(result => {
-			console.log('before');
-			console.log(msg.toUserId);
-			console.log(loggedUsers[msg.toUserId]);
-			console.log(loggedUsers);
-			console.log('me', socket.id);
-			chatSerivce.updateChatList(msg.fromUserId, msg.toUserId)
+			chatSerivce.updateChatList(msg)
 			
 			
 			

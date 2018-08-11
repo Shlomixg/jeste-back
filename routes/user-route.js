@@ -23,4 +23,5 @@ module.exports = app => {
 	//     userService.update(user)
 	//         .then(user => res.json(user))
 	// })
+
 };
