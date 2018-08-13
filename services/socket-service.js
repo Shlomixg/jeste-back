@@ -105,6 +105,11 @@ function socket(socket, io) {
 					})
 			});
 	});
+	
+	socket.on('jesteCompleted', ({ jeste }) => {
+		return jesteService.update(jeste)
+			
+	});
 
 	socket.on('rejectRespond', ({ jeste }) => {
 		let resUserId = jeste.res_user_id;
