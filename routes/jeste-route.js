@@ -3,11 +3,11 @@ const ObjectId = require('mongodb').ObjectId;
 const JESTES_URL = '/jeste';
 
 module.exports = app => {
-	
+
 	app.get(`${JESTES_URL}`, (req, res) => {
 		let sortBy = req.query.sortBy;
 		let coordinates = req.query.coords.split(',').map(coord => +coord);
-		if(!coordinates || !coordinates[1]) coordinates = [ 32.0880849, 34.8032696 ]
+		// if(!coordinates || !coordinates[1]) coordinates = [ 32.0880849, 34.8032696 ]
 		let qText = new RegExp(req.query.q, 'igm');
 		let maxDistance = +req.query.maxDistance;
 		let price = +req.query.maxPrice;
