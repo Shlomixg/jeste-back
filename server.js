@@ -10,19 +10,16 @@ const socketService = require('./services/socket-service');
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static('dist'));
-var server = app.listen(PORT, () =>
-	console.log(`Server listening on port ${PORT}`)
-);
+var server = app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 
 var io = require('socket.io')(server);
-
 io.on('connection', socket => socketService.socket(socket, io));
 
-app.use( cors({
-		origin: ['http://localhost:8080'],
-		credentials: true // enable set cookie
-	})
-);
+app.use(cors({
+	origin: ['http://localhost:8080'],
+	credentials: true // enable set cookie
+}));
+
 // Support JSON in the request's body (for our: POST/PUT requests)
 app.use(bodyParser.json());
 

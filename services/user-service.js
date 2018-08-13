@@ -29,10 +29,8 @@ function query(id = null) {
 		];
 	}
 	return mongoService.connect().then(db => {
-		if (id) {
-			return db.collection(dbCollection).aggregate(criteria).toArray();
-		} else
-			return db.collection(dbCollection).find({}).toArray();
+		if (id) return db.collection(dbCollection).aggregate(criteria).toArray();
+		else return db.collection(dbCollection).find({}).toArray();
 	});
 }
 
@@ -45,7 +43,7 @@ function getUserById(id) {
 
 function checkLogin(user) {
 	return mongoService.connect().then(db =>
-		db.collection('user').findOne({$and: [{ email: user.email }, { password: user.password }]})
+		db.collection('user').findOne({ $and: [{ email: user.email }, { password: user.password }] })
 	);
 }
 
@@ -59,15 +57,15 @@ function checkLogin(user) {
 // }
 
 function add(user) {
-    return mongoService.connect()
-        .then(db => {
-            const collection = db.collection(dbCollection);
-            return collection.insertOne(user)
-                .then(result => {
+	return mongoService.connect()
+		.then(db => {
+			const collection = db.collection(dbCollection);
+			return collection.insertOne(user)
+				.then(result => {
 					user._id = result.insertedId;
-                    return user;
-                })
-        })
+					return user;
+				})
+		})
 }
 
 // function update(user) {

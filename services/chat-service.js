@@ -5,10 +5,7 @@ const dbCol = 'chat';
 function query(jesteId) {
 	jesteId = new ObjectId(jesteId);
 	return mongoService.connect().then(db => {
-		return db
-			.collection(dbCol)
-			.find({ jeste_id: jesteId })
-			.toArray();
+		return db.collection(dbCol).find({ jeste_id: jesteId }).toArray();
 	});
 }
 
@@ -25,39 +22,34 @@ function getHistory({ userId, thisUserId }) {
 	userId = new ObjectId(userId);
 	thisUserId = new ObjectId(thisUserId);
 	return mongoService.connect().then(db => {
-		return db
-			.collection(dbCol)
-			.find({
-				$or: [
-					{
-						$and: [{ fromUserId: userId }, { toUserId: thisUserId }]
-					},
-					{ $and: [{ fromUserId: thisUserId }, { toUserId: userId }] }
-				]
-			})
-			.toArray();
+		return db.collection(dbCol).find({
+			$or: [
+				{
+					$and: [{ fromUserId: userId }, { toUserId: thisUserId }]
+				},
+				{ $and: [{ fromUserId: thisUserId }, { toUserId: userId }] }
+			]
+		}).toArray();
 	});
 }
+
 function markRead(ids, userId, friendId) {
 	let filter = ids.reduce((acc, id) => {
 		acc.push({ _id: new ObjectId(id) });
 		return acc;
 	}, []);
+
 	userId = new ObjectId(userId);
 	friendId = new ObjectId(friendId);
 	mongoService.connect().then(db => {
-		return db
-			.collection('chat_list')
-			.updateOne(
-				{ userId: userId, friendId: friendId },
-				{$set: { unReadCount: 0 }}
-			);
+		return db.collection('chat_list').updateOne(
+			{ userId: userId, friendId: friendId },
+			{ $set: { unReadCount: 0 } }
+		);
 	});
 
 	return mongoService.connect().then(db => {
-		return db
-			.collection(dbCol)
-			.updateMany({ $or: filter }, { $set: { isRead: true } });
+		return db.collection(dbCol).updateMany({ $or: filter }, { $set: { isRead: true } });
 	});
 }
 
@@ -71,16 +63,14 @@ module.exports = {
 	getChatList
 };
 
-function updateChatList({fromUserId, toUserId, timestamp, data}) {
+function updateChatList({ fromUserId, toUserId, timestamp, data }) {
 	fromUserId = new ObjectId(fromUserId);
 	toUserId = new ObjectId(toUserId);
 	let txt = (data.text) ? data.text.substring(0, 100) : data.emoji
 
-	
-
 	return mongoService.connect().then(db => {
 		var bulk = db.collection('chat_list').initializeOrderedBulkOp();
-		bulk.find({ userId: fromUserId, friendId: toUserId  })
+		bulk.find({ userId: fromUserId, friendId: toUserId })
 			.upsert()
 			.updateOne({
 				$set: { timestamp: timestamp, txt: txt, unReadCount: 0 }
@@ -98,39 +88,33 @@ function updateChatList({fromUserId, toUserId, timestamp, data}) {
 function getChatList(userId) {
 	userId = new ObjectId(userId);
 	return mongoService.connect().then(db => {
-		return db
-			.collection('chat_list')
-			.aggregate([
-				{ $match: { userId: userId } },
-				{ $sort: { timestamp: -1 } },
-				{ $skip: 0 },
-
-				{ $limit: 10 },
-
-				{
-					$lookup: {
-						from: 'user',
-						localField: 'friendId',
-						foreignField: '_id',
-						as: 'chatUser'
-					}
-				},
-				{
-					$unwind: { path: '$chatUser' }
-				},
-
-				{
-					$project: {
-						userId: 1,
-						friendId: 1,
-						timestamp: 1,
-						unReadCount: 1,
-						txt: 1,
-						'chatUser.details': 1,
-						'chatUser.img': 1
-					}
+		return db.collection('chat_list').aggregate([
+			{ $match: { userId: userId } },
+			{ $sort: { timestamp: -1 } },
+			{ $skip: 0 },
+			{ $limit: 10 },
+			{
+				$lookup: {
+					from: 'user',
+					localField: 'friendId',
+					foreignField: '_id',
+					as: 'chatUser'
 				}
-			])
-			.toArray();
+			},
+			{
+				$unwind: { path: '$chatUser' }
+			},
+			{
+				$project: {
+					userId: 1,
+					friendId: 1,
+					timestamp: 1,
+					unReadCount: 1,
+					txt: 1,
+					'chatUser.details': 1,
+					'chatUser.img': 1
+				}
+			}
+		]).toArray();
 	});
 }

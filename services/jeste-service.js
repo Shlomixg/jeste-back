@@ -32,7 +32,6 @@ function add(jeste) {
             return db.collection(dbCol).insertOne(jeste)
                 .then(result => {
                     jeste._id = result.insertedId;
-
                     return jeste;
                 })
         })
