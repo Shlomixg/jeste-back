@@ -44,7 +44,7 @@ module.exports = app => {
 					}
 				}
 			},
-			{ ...(sortBy ? { $sort: { [sortBy]: -1 } } :  { $sort: { 'destination_loc.calculated': 1 } }) },
+			...(sortBy ? [{ $sort: { [sortBy]: -1 } }] : []),
 			{
 				$lookup: {
 					from: 'user',
