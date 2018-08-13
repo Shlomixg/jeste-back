@@ -3,8 +3,11 @@ const ObjectId = require('mongodb').ObjectId;
 const JESTES_URL = '/jeste';
 
 module.exports = app => {
+	
 	app.get(`${JESTES_URL}`, (req, res) => {
+		let sortBy = req.query.sortBy;
 		let coordinates = req.query.coords.split(',').map(coord => +coord);
+		if(!coordinates || !coordinates[1]) coordinates = [ 32.0880849, 34.8032696 ]
 		let qText = new RegExp(req.query.q, 'igm');
 		let maxDistance = +req.query.maxDistance;
 		let price = +req.query.maxPrice;
@@ -41,7 +44,7 @@ module.exports = app => {
 					}
 				}
 			},
-			// { $sort : { created_at : 1} },
+			{ ...(sortBy ? { $sort: { [sortBy]: -1 } } :  { $sort: { 'destination_loc.calculated': 1 } }) },
 			{
 				$lookup: {
 					from: 'user',
@@ -101,4 +104,5 @@ module.exports = app => {
 		jeste.req_user_id = ObjectId(jeste.req_user_id);
 		jesteService.update(jeste).then(jeste => res.json(jeste));
 	});
+
 };
