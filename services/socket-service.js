@@ -82,7 +82,7 @@ function socket(socket, io) {
 		}
 	});
 
-	socket.on('acceptRespond', function (jeste) {
+	socket.on('acceptRespond', ({ jeste }) => {
 		console.log('Accept Respond');
 		jesteService.update(jeste)
 			.then(_ => {
@@ -106,7 +106,7 @@ function socket(socket, io) {
 			});
 	});
 
-	socket.on('rejectRespond', function (jeste) {
+	socket.on('rejectRespond', ({ jeste }) => {
 		let resUserId = jeste.res_user_id;
 		console.log('Reject Respond');
 		jeste.res_user_id = null;
