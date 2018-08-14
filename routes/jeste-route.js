@@ -39,7 +39,9 @@ module.exports = app => {
 							},
 							// Using ternary if to decide whether filter by category/price or not
 							{ ...(category ? { category } : {}) },
-							{ ...(price ? { price: { $lte: price } } : {}) }
+							{ ...(price ? { price: { $lte: price } } : {}) },
+							{ ...(price ? { price: { $lte: price } } : {}) },
+							{ status: 0 },
 						]
 					}
 				}
