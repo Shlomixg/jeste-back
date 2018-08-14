@@ -1,3 +1,5 @@
+'use strict';
+
 const jesteService = require('./jeste-service');
 const chatSerivce = require('./chat-service');
 const notificationService = require('./notification-service');
@@ -5,10 +7,9 @@ const ObjectId = require('mongodb').ObjectId;
 var loggedUsers = {};
 
 function socket(socket, io) {
+
 	socket.on('userLogged', ({ userId }) => {
 		console.log('Logged', userId);
-		console.log('Logged list', loggedUsers);
-
 		loggedUsers[userId] = socket.id;
 		console.log('Loggged user after assign', loggedUsers);
 	});
@@ -32,10 +33,8 @@ function socket(socket, io) {
 				notificationService.add(notification)
 					.then(result => {
 						let socketId = loggedUsers[jeste.req_user_id];
-
 						if (socketId) {
 							notification._id = result.insertedId;
-
 							io.to(`${socketId}`).emit('receivedNotification', notification);
 						}
 					})
@@ -47,7 +46,6 @@ function socket(socket, io) {
 			.then(result => {
 				chatSerivce.updateChatList(msg)
 				if (loggedUsers[msg.toUserId]) {
-					console.log('Emit sent');
 					msg._id = result.insertedId;
 					let socketId = loggedUsers[msg.toUserId];
 					io.to(`${socketId}`).emit('receivedMsg', msg);
@@ -73,7 +71,6 @@ function socket(socket, io) {
 
 	socket.on('disconnect', function () {
 		console.log('Disconnected');
-
 		for (let userId in loggedUsers) {
 			if ((loggedUsers[userId] === socket.id)) {
 				delete loggedUsers[userId];
@@ -82,7 +79,7 @@ function socket(socket, io) {
 		}
 	});
 
-	socket.on('acceptRespond', ({ jeste }) => {
+	socket.on('acceptRespond', ({ jeste, user }) => {
 		console.log('Accept Respond');
 		jesteService.update(jeste)
 			.then(_ => {
@@ -91,7 +88,7 @@ function socket(socket, io) {
 					friendId: new ObjectId(jeste.req_user_id),
 					jesteId: new ObjectId(jeste._id),
 					img: jeste.img.secure_url,
-					txt: `Someone accepted your offer to help!`,
+					txt: `${user.details.firstName} ${user.details.lastName} accepted your offer to help!`,
 					timestamp: Date.now(),
 					isRead: false,
 				}
@@ -105,13 +102,8 @@ function socket(socket, io) {
 					})
 			});
 	});
-	
-	socket.on('jesteCompleted', ({ jeste }) => {
-		return jesteService.update(jeste)
-			
-	});
 
-	socket.on('rejectRespond', ({ jeste }) => {
+	socket.on('rejectRespond', ({ jeste, user }) => {
 		let resUserId = jeste.res_user_id;
 		console.log('Reject Respond');
 		jeste.res_user_id = null;
@@ -122,13 +114,36 @@ function socket(socket, io) {
 					friendId: new ObjectId(jeste.req_user_id),
 					jesteId: new ObjectId(jeste._id),
 					img: jeste.img.secure_url,
-					txt: `Someone rejected your offer to help!`,
+					txt: `${user.details.firstName} ${user.details.lastName} rejected your offer to help`,
 					timestamp: Date.now(),
 					isRead: false,
 				}
 				notificationService.add(notification)
 					.then(result => {
 						let socketId = loggedUsers[resUserId];
+						if (socketId) {
+							notification._id = result.insertedId;
+							io.to(`${socketId}`).emit('receivedNotification', notification);
+						}
+					})
+			});
+	});
+
+	socket.on('jesteCompleted', ({ jeste, user }) => {
+		return jesteService.update(jeste)
+			.then(_ => {
+				let notification = {
+					userId: new ObjectId(jeste.res_user_id),
+					friendId: new ObjectId(jeste.req_user_id),
+					jesteId: new ObjectId(jeste._id),
+					img: jeste.img.secure_url,
+					txt: `Thank you for jeste for ${user.details.firstName} ${user.details.lastName}!`,
+					timestamp: Date.now(),
+					isRead: false,
+				}
+				notificationService.add(notification)
+					.then(result => {
+						let socketId = loggedUsers[jeste.res_user_id];
 						if (socketId) {
 							notification._id = result.insertedId;
 							io.to(`${socketId}`).emit('receivedNotification', notification);

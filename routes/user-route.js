@@ -1,4 +1,7 @@
+'use strict';
+
 const userService = require('../services/user-service');
+
 const USERS_URL = '/user';
 
 module.exports = app => {
@@ -18,12 +21,12 @@ module.exports = app => {
 		const user = req.body;
 		userService.add(user)
 			.then(user => res.json(user))
-	})
+	});
 
 	// app.put(`${USERS_URL}/:userId`, (req, res) => {
 	//     const user = req.body;
 	//     userService.update(user)
 	//         .then(user => res.json(user))
-	// })
+	// });
 
 };

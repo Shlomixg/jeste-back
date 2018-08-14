@@ -10,12 +10,12 @@ module.exports = app => {
         console.log('Notifications load', req.params);
         notificationService.query(req.params.userId)
             .then(notifications => res.json(notifications));
-    })
+    });
 
     app.put(`${NOTIFICATION_URL}`, (req, res) => {
         const { ids } = req.body;
         notificationService.markRead(ids)
             .then(_ => res.json())
-    })
+    });
 
 };

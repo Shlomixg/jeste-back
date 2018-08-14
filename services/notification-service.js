@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoService = require('./mongo-service');
 const ObjectId = require('mongodb').ObjectId;
 const dbCol = 'notification';
@@ -10,7 +12,7 @@ function query(userId) {
 }
 
 function add(notification) {
-	console.log('Adding notifiy');
+	console.log('Adding Notification');
 	return mongoService.connect().then(db => {
 		return db.collection(dbCol).insertOne(notification)
 			.then(result => {
@@ -29,10 +31,6 @@ function markRead(ids, userId, friendId) {
 	return mongoService.connect().then(db => {
 		return db.collection(dbCol).updateMany({ $or: filter }, { $set: { isRead: true } });
 	});
-}
-
-function markResponded(ids, userId, friendId) {
-	
 }
 
 module.exports = {

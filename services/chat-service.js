@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoService = require('./mongo-service');
 const ObjectId = require('mongodb').ObjectId;
 const dbCol = 'chat';
@@ -8,7 +10,6 @@ function query(jesteId) {
 		return db.collection(dbCol).find({ jeste_id: jesteId }).toArray();
 	});
 }
-
 
 function add(msg) {
 	msg.fromUserId = new ObjectId(msg.fromUserId);
@@ -24,9 +25,7 @@ function getHistory({ userId, thisUserId }) {
 	return mongoService.connect().then(db => {
 		return db.collection(dbCol).find({
 			$or: [
-				{
-					$and: [{ fromUserId: userId }, { toUserId: thisUserId }]
-				},
+				{ $and: [{ fromUserId: userId }, { toUserId: thisUserId }] },
 				{ $and: [{ fromUserId: thisUserId }, { toUserId: userId }] }
 			]
 		}).toArray();
@@ -53,15 +52,7 @@ function markRead(ids, userId, friendId) {
 	});
 }
 
-module.exports = {
-	query,
-	add,
-	// update,
-	getHistory,
-	markRead,
-	updateChatList,
-	getChatList
-};
+
 
 function updateChatList({ fromUserId, toUserId, timestamp, data }) {
 	fromUserId = new ObjectId(fromUserId);
@@ -72,9 +63,7 @@ function updateChatList({ fromUserId, toUserId, timestamp, data }) {
 		var bulk = db.collection('chat_list').initializeOrderedBulkOp();
 		bulk.find({ userId: fromUserId, friendId: toUserId })
 			.upsert()
-			.updateOne({
-				$set: { timestamp: timestamp, txt: txt, unReadCount: 0 }
-			});
+			.updateOne({ $set: { timestamp: timestamp, txt: txt, unReadCount: 0 } });
 		bulk.find({ userId: toUserId, friendId: fromUserId })
 			.upsert()
 			.updateOne({
@@ -118,3 +107,13 @@ function getChatList(userId) {
 		]).toArray();
 	});
 }
+
+module.exports = {
+	query,
+	add,
+	// update,
+	getHistory,
+	markRead,
+	updateChatList,
+	getChatList
+};

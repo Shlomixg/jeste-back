@@ -6,7 +6,7 @@ const gRooms = [];
 const findRoom = roomId => {
 	gRooms.find(room => room.id === roomId);
 };
-
+'use strict';
 
 const createRoom = id => ({ id });
 

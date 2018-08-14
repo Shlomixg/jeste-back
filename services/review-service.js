@@ -1,3 +1,5 @@
+'use strict';
+
 const mongoService = require('./mongo-service');
 const ObjectId = require('mongodb').ObjectId;
 const dbCol = 'reviews';
@@ -13,14 +15,14 @@ function getById(reviewId) {
                 {
                     $lookup:
                     {
-                        from: 'toy',
-                        localField: 'toyId',
+                        from: 'jeste',
+                        localField: 'jesteId',
                         foreignField: '_id',
-                        as: 'toy'
+                        as: 'jeste'
                     }
                 },
                 {
-                    $unwind: '$toy'
+                    $unwind: '$jeste'
                 },
                 {
                     $lookup:
@@ -42,7 +44,7 @@ function getById(reviewId) {
 function query({ userId = null, toyId = null } = {}) {
     const criteria = {}
     if (userId) criteria.userId = new ObjectId(userId)
-    if (toyId) criteria.toyId = new ObjectId(toyId)
+    if (jesteId) criteria.toyId = new ObjectId(jesteId)
     return mongoService.connect().then(db => {
         return db.collection(dbCol)
             .aggregate([
@@ -52,14 +54,14 @@ function query({ userId = null, toyId = null } = {}) {
                 {
                     $lookup:
                     {
-                        from: 'toy',
-                        localField: 'toyId',
+                        from: 'jeste',
+                        localField: 'jesteId',
                         foreignField: '_id',
-                        as: 'toy'
+                        as: 'jeste'
                     }
                 },
                 {
-                    $unwind: '$toy'
+                    $unwind: '$jeste'
                 },
                 {
                     $lookup:
@@ -88,13 +90,13 @@ function getUserReviews(userId) {
                 {
                     $lookup:
                     {
-                        from: 'toy',
-                        localField: 'toyId',
+                        from: 'jeste',
+                        localField: 'jesteId',
                         foreignField: '_id',
-                        as: 'toy'
+                        as: 'jeste'
                     }
                 }, {
-                    $unwind: '$toy'
+                    $unwind: '$jeste'
                 }
             ]).toArray()
         )

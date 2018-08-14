@@ -1,4 +1,5 @@
 'use strict';
+
 var dbConn = null;
 
 const dbName = 'jeste_db';

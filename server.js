@@ -8,7 +8,6 @@ var session = require('express-session');
 const socketService = require('./services/socket-service');
 
 const PORT = process.env.PORT || 3000;
-
 app.use(express.static('dist'));
 var server = app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 

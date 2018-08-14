@@ -1,5 +1,8 @@
+'use strict';
+
 const jesteService = require('../services/jeste-service');
 const ObjectId = require('mongodb').ObjectId;
+
 const JESTES_URL = '/jeste';
 
 module.exports = app => {
